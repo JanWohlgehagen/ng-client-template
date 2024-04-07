@@ -1,11 +1,11 @@
 FROM node:20-alpine as angular
-WORKDIR /ng-app
-COPY package*.json .
+WORKDIR /app
+COPY package*.json ./
+# npm ci is prefered to npm i because it does not bump versions thereby increating reproducibility
 RUN npm ci
 COPY . .
 RUN npm run build
 
 FROM nginx:alpine
-ARG frontend
-COPY --from=angular /ng-app/dist/$frontend/browser /usr/share/nginx/html
+COPY --from=angular ./app/dist/frontend/browser /usr/share/nginx/html
 EXPOSE 80
